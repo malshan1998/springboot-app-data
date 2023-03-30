@@ -1,5 +1,6 @@
 package org.malshan.springbootappdata.topic;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,37 +14,34 @@ import java.util.List;
 
 @Service    // Stereotype annotation as a Service class
 public class TopicService {
-    private List<Topic> topics = new ArrayList<>(Arrays.asList(
-//            new Topic(),    // TODO: Must handle the situation where there's a null object
-            new Topic("1", "Spring Framework 1", "Spring Framework Description 1"),
-            new Topic("2", "Spring Framework 2", "Spring Framework Description 2"),
-            new Topic("3", "Spring Framework 3", "Spring Framework Description 3")
-    ));
+
+    @Autowired
+    private TopicRepository topicRepository;
 
     public List<Topic> getAllTopics() {
+        List<Topic> topics = new ArrayList<>();
+        // Adds all items found, into the topics list.
+        topicRepository.findAll()
+                .forEach(topics::add);
         return topics;
     }
 
     public Topic getTopic(String Id) {
-        Topic topic = topics.stream().filter(t -> t.getId().equals(Id)).findFirst().get();
-        return topic;
+        return topicRepository.findOne(Id);
     }
 
     public void addTopic(Topic topic) {
-        topics.add(topic);
+        topicRepository.save(topic);
     }
 
     public void updateTopic(Topic topic, String Id) {
-        for (int i = 0; i < topics.size(); i++) {
-            Topic t = topics.get(i);
-            if (t.getId().equals(Id)) {
-                topics.set(i, topic);
-                return;
-            }
-        }
+        topicRepository.save(topic);
+        // 'save' works as both add and update.
+        // We're sending a Topic instance, which already has the Id information.
+        // So, if the Id doesn't exist, it adds. If it does, it updates.
     }
 
     public void deleteTopic(String Id) {
-        topics.removeIf(t -> t.getId().equals(Id));
+        topicRepository.delete(Id);
     }
 }

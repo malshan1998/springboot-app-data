@@ -1,24 +1,30 @@
-package org.malshan.springbootappdata.topic;
+package org.malshan.springbootappdata.course;
+
+import org.malshan.springbootappdata.topic.Topic;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Topic {
+public class Course {
 
     @Id
     private String id;
     private String name;
     private String description;
+    @ManyToOne
+    private Topic topic;
 
-    public Topic() {
+    public Course() {
     }
 
-    public Topic(String id, String name, String description) {
+    public Course(String id, String name, String description, String topicID) {
         super();
         this.id = id;
         this.name = name;
         this.description = description;
+        this.topic = new Topic(topicID, "", "");
     }
 
     public String getId() {
@@ -43,5 +49,13 @@ public class Topic {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 }
